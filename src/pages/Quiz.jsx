@@ -11,6 +11,7 @@ const Quiz = () => {
   const [submitting, setSubmitting] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [categories, setCategories] = useState([]);
+  const [numQuestions, setNumQuestions] = useState(10);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -50,7 +51,7 @@ const Quiz = () => {
   const startQuiz = async () => {
     setLoading(true);
     try {
-      const response = await quizAPI.getQuestions(selectedCategory);
+      const response = await quizAPI.getQuestions(selectedCategory, numQuestions);
       setQuestions(response.data.questions);
       setCurrentQuestion(0);
       setAnswers({});
@@ -136,7 +137,19 @@ const Quiz = () => {
               ))}
             </select>
           </div>
-
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Number of Questions
+            </label>
+            <input
+              type="number"
+              min={1}
+              max={50}
+              value={numQuestions}
+              onChange={e => setNumQuestions(Number(e.target.value))}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+            />
+          </div>
           <button
             onClick={startQuiz}
             disabled={loading}

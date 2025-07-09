@@ -47,7 +47,7 @@ export const authAPI = {
 
 // Quiz API calls
 export const quizAPI = {
-  getQuestions: (category) => api.get('/quiz/questions', { params: { category } }),
+  getQuestions: (category, limit) => api.get('/quiz/questions', { params: { category, limit } }),
   submitQuiz: (attemptData) => api.post('/quiz/submit', attemptData),
   getCategories: () => api.get('/quiz/categories'),
   getUserAttempts: () => api.get('/quiz/attempts'),
@@ -75,7 +75,8 @@ export const adminAPI = {
 export const getCyberNews = async () => {
   // Example: Using a free endpoint from a public news API (replace with your API key if needed)
   // This is a placeholder using a sample endpoint for demonstration
-  const url = 'https://newsapi.org/v2/everything?q=cybersecurity&apiKey=demo'; // Replace 'demo' with your API key
+  // Replace 'YOUR_REAL_NEWSAPI_KEY' with your actual NewsAPI key
+  const url = 'https://newsapi.org/v2/everything?q=cybersecurity&apiKey=0e5b4a008a08437ab6a5eca33f1b0e52';
   try {
     const response = await axios.get(url);
     return response.data.articles.slice(0, 5); // Return top 5 articles

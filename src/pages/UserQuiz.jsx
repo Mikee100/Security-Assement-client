@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 const UserQuiz = () => {
   const [questions, setQuestions] = useState([]);
@@ -9,17 +10,47 @@ const UserQuiz = () => {
   const [score, setScore] = useState(0);
   const { user } = useAuth();
   const [submitMessage, setSubmitMessage] = useState('');
-  const QUIZ_LENGTH = 5;
+  const [numQuestions, setNumQuestions] = useState(10);
+  const [quizStarted, setQuizStarted] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    fetch('/api/admin/questions')
+    if (!quizStarted) return;
+    fetch(`/api/admin/questions`)
       .then(res => res.json())
       .then(data => {
         const all = Array.isArray(data.questions) ? data.questions : [];
         const shuffled = all.sort(() => 0.5 - Math.random());
-        setQuestions(shuffled.slice(0, QUIZ_LENGTH));
+        setQuestions(shuffled.slice(0, numQuestions));
       });
-  }, []);
+  }, [quizStarted, numQuestions]);
+
+  if (!quizStarted) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-100">
+        <div className="w-full max-w-md bg-white rounded-lg shadow-lg p-8 flex flex-col items-center">
+          <h2 className="text-2xl font-bold mb-6 text-center">Start User Quiz</h2>
+          <div className="mb-4 w-full">
+            <label className="block text-sm font-medium text-gray-700 mb-2">Number of Questions</label>
+            <input
+              type="number"
+              min={1}
+              max={50}
+              value={numQuestions}
+              onChange={e => setNumQuestions(Number(e.target.value))}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+            />
+          </div>
+          <button
+            className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700"
+            onClick={() => setQuizStarted(true)}
+          >
+            Start Quiz
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   if (!Array.isArray(questions) || questions.length === 0) {
     return (
@@ -48,7 +79,7 @@ const UserQuiz = () => {
       try {
         const token = localStorage.getItem('token');
         const level_id = questions[0]?.level_id || null;
-        await fetch('/api/quiz/attempt', {
+        await fetch('/api/quiz/submit', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -59,8 +90,8 @@ const UserQuiz = () => {
             total_questions: questions.length,
             level_id,
             answers: questions.map((q, idx) => ({
-              question_id: q.id,
-              selected: answers[idx],
+              questionId: q.id,
+              selectedAnswer: answers[idx],
               correct: answers[idx] === q.correct_answer,
             })),
           }),
@@ -83,12 +114,20 @@ const UserQuiz = () => {
           <h2 className="text-3xl font-bold mb-4 text-green-700">Quiz Complete!</h2>
           <p className="text-lg mb-2">Your score: <span className="font-bold">{score} / {questions.length}</span></p>
           {submitMessage && <div className="mb-2 text-blue-600">{submitMessage}</div>}
-          <button
-            className="mt-4 bg-blue-600 text-white px-6 py-2 rounded shadow hover:bg-blue-700"
-            onClick={() => window.location.reload()}
-          >
-            Retake Quiz
-          </button>
+          <div className="flex gap-4 mt-4">
+            <button
+              className="bg-blue-600 text-white px-6 py-2 rounded shadow hover:bg-blue-700"
+              onClick={() => window.location.reload()}
+            >
+              Retake Quiz
+            </button>
+            <button
+              className="bg-gray-500 text-white px-6 py-2 rounded shadow hover:bg-gray-700"
+              onClick={() => navigate('/dashboard')}
+            >
+              Back to Dashboard
+            </button>
+          </div>
         </div>
       </div>
     );

@@ -5,7 +5,9 @@ import { useAdmin } from '../../contexts/AdminContext';
 const navLinks = [
   { to: '/admin/dashboard', label: 'Dashboard', icon: '🏠' },
   { to: '/admin/create-question', label: 'Create Question', icon: '➕' },
+  { to: '/admin/questions', label: 'Questions', icon: '❓' },
   { to: '/admin/results', label: 'Quiz Results', icon: '📊' },
+  { to: '/admin/users', label: 'Users', icon: '👥' },
 ];
 
 const AdminNavbar = () => {

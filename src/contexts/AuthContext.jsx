@@ -50,18 +50,11 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const register = async (username, email, password) => {
+  const register = async (fullName, email, password) => {
     try {
-      const response = await authAPI.register({ username, email, password });
-      const { user, token, role } = response.data;
-      
-      localStorage.setItem('token', token);
-      localStorage.setItem('user', JSON.stringify(user));
-      localStorage.setItem('role', role);
-      setUser(user);
-      setRole(role);
-      
-      return { success: true, role };
+      const response = await authAPI.register({ fullName, email, password });
+      // Do NOT log in or store user/token/role after registration
+      return { success: true };
     } catch (error) {
       return { 
         success: false, 

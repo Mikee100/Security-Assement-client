@@ -131,7 +131,7 @@ const AdminDashboard = () => {
                 Create Question
               </Link>
               <Link
-                to="/admin/stats"
+                to="/admin/results"
                 className="block w-full bg-purple-600 text-white text-center py-3 px-4 rounded-md hover:bg-purple-700 transition-colors"
               >
                 View Statistics

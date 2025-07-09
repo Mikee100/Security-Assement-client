@@ -20,6 +20,8 @@ import AdaptiveQuiz from './pages/AdaptiveQuiz';
 import './App.css';
 import AdminQuizResults from './admin/pages/AdminQuizResults';
 import VerifyEmail from './pages/VerifyEmail';
+import AdminUsersPage from './admin/pages/AdminUsersPage';
+import AdminQuestionsPage from './admin/pages/AdminQuestionsPage';
 
 function App() {
   return (
@@ -120,6 +122,22 @@ function App() {
                   <AdminNavbar />
                   <ProtectedAdminRoute>
                     <AdminQuizResults />
+                  </ProtectedAdminRoute>
+                </>
+              } />
+              <Route path="/admin/users" element={
+                <>
+                  <AdminNavbar />
+                  <ProtectedAdminRoute>
+                    <AdminUsersPage />
+                  </ProtectedAdminRoute>
+                </>
+              } />
+              <Route path="/admin/questions" element={
+                <>
+                  <AdminNavbar />
+                  <ProtectedAdminRoute>
+                    <AdminQuestionsPage />
                   </ProtectedAdminRoute>
                 </>
               } />

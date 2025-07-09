@@ -35,6 +35,8 @@ const Dashboard = () => {
   const [twofaCode, setTwofaCode] = useState('');
   const [twofaMsg, setTwofaMsg] = useState('');
   const [twofaError, setTwofaError] = useState('');
+  const [categories, setCategories] = useState([]);
+  const [recommendation, setRecommendation] = useState('');
 
   // Carousel effect for tips
   useEffect(() => {
@@ -136,6 +138,27 @@ const Dashboard = () => {
     setChecklist((prev) => ({ ...prev, [key]: !prev[key] }));
   };
 
+  useEffect(() => {
+    const fetchCategoriesAndRecommend = async () => {
+      try {
+        const categoriesRes = await quizAPI.getCategories();
+        setCategories(categoriesRes.data.categories);
+        // Wait for attempts to be loaded
+        const attemptsRes = await quizAPI.getUserAttempts();
+        const attemptedCategories = new Set((attemptsRes.data.attempts || []).map(a => a.category));
+        const notTried = (categoriesRes.data.categories || []).filter(cat => !attemptedCategories.has(cat));
+        if (notTried.length > 0) {
+          setRecommendation(`You haven’t tried the "${notTried[0]}" quiz yet—give it a go!`);
+        } else {
+          setRecommendation('Great job! You have tried all quiz categories. Try to improve your scores or revisit a topic.');
+        }
+      } catch (err) {
+        setRecommendation('Unable to load recommendations at this time.');
+      }
+    };
+    fetchCategoriesAndRecommend();
+  }, []);
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-100 flex items-center justify-center">
@@ -157,6 +180,20 @@ const Dashboard = () => {
   return (
     <div className="min-h-screen bg-gray-100">
       <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+        {/* Personalized Recommendations */}
+        {recommendation && (
+          <div className="mb-8">
+            <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded shadow flex items-center">
+              <svg className="w-8 h-8 text-yellow-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M12 20a8 8 0 100-16 8 8 0 000 16z" />
+              </svg>
+              <div>
+                <p className="font-semibold text-yellow-800">Personalized Recommendation</p>
+                <p className="text-yellow-700 text-lg animate-fade-in">{recommendation}</p>
+              </div>
+            </div>
+          </div>
+        )}
         {/* Cybersecurity Tips Carousel */}
         <div className="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div className="bg-blue-50 border-l-4 border-blue-400 p-4 rounded shadow flex-1">
@@ -265,7 +302,7 @@ const Dashboard = () => {
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
             <div className="space-y-3">
               <Link
-                to="/adaptive-quiz"
+                to="/user-quiz"
                 className="block w-full bg-blue-600 text-white text-center py-3 px-4 rounded-md hover:bg-blue-700 transition-colors"
               >
                 Take New Quiz
@@ -288,7 +325,7 @@ const Dashboard = () => {
                     <div>
                       <p className="font-medium">Quiz Attempt</p>
                       <p className="text-sm text-gray-500">
-                        {new Date(attempt.created_at).toLocaleDateString()}
+                        {new Date(attempt.started_at).toLocaleDateString()}
                       </p>
                     </div>
                     <div className="text-right">

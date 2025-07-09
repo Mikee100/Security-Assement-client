@@ -29,7 +29,7 @@ const AdaptiveQuiz = () => {
   const [feedback, setFeedback] = useState(null);
   const [adaptionMsg, setAdaptionMsg] = useState('');
   const { user } = useAuth();
-  const MAX_QUESTIONS = 5;
+  const MAX_QUESTIONS = 10;
 
   useEffect(() => {
     fetch('/api/admin/questions')
@@ -97,7 +97,7 @@ const AdaptiveQuiz = () => {
       try {
         const token = localStorage.getItem('token');
         const level_id = currentQuestion.level_id || null;
-        await fetch('/api/quiz/attempt', {
+        await fetch('/api/quiz/submit', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
