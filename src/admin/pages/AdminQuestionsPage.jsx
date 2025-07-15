@@ -196,7 +196,6 @@ const AdminQuestionsPage = () => {
           <table className="min-w-full bg-white rounded-lg">
             <thead>
               <tr className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
-                <th className="py-3 px-4 text-left font-semibold">ID</th>
                 <th className="py-3 px-4 text-left font-semibold">Question</th>
                 <th className="py-3 px-4 text-left font-semibold">Options</th>
                 <th className="py-3 px-4 text-left font-semibold">Answer</th>
@@ -214,7 +213,6 @@ const AdminQuestionsPage = () => {
               ) : (
                 filteredQuestions.map(q => (
                   <tr key={q.id} className="hover:bg-blue-50 transition-colors">
-                    <td className="py-3 px-4 text-gray-700">{q.id}</td>
                     <td className="py-3 px-4 text-gray-900 font-medium">{q.question}</td>
                     <td className="py-3 px-4 text-gray-700">{Array.isArray(q.options) ? q.options.join(', ') : (q.options ? JSON.parse(q.options).join(', ') : '')}</td>
                     <td className="py-3 px-4 text-green-700 font-semibold">{q.correct_answer}</td>
