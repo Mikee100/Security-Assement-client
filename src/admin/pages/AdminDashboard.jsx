@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { useAdmin } from '../../contexts/AdminContext';
+import { useAuth } from '../../contexts/AuthContext';
 import { adminAPI } from '../../utils/api';
 import AdminCreateQuestion from '../components/AdminCreateQuestion';
 
 const AdminDashboard = () => {
-  const { admin } = useAdmin();
+  const { user } = useAuth();
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -40,10 +40,9 @@ const AdminDashboard = () => {
             Admin Dashboard
           </h1>
           <p className="mt-2 text-gray-600">
-            Welcome back, {admin?.username}! Manage your security awareness platform.
+            Welcome back, {user?.username || user?.fullName || 'Admin'}! Manage your security awareness platform.
           </p>
         </div>
-
         {/* Stats Cards */}
         {stats && (
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
@@ -60,7 +59,6 @@ const AdminDashboard = () => {
                 </div>
               </div>
             </div>
-
             <div className="bg-white rounded-lg shadow p-6">
               <div className="flex items-center">
                 <div className="p-2 bg-green-100 rounded-lg">
@@ -74,7 +72,6 @@ const AdminDashboard = () => {
                 </div>
               </div>
             </div>
-
             <div className="bg-white rounded-lg shadow p-6">
               <div className="flex items-center">
                 <div className="p-2 bg-yellow-100 rounded-lg">
@@ -88,7 +85,6 @@ const AdminDashboard = () => {
                 </div>
               </div>
             </div>
-
             <div className="bg-white rounded-lg shadow p-6">
               <div className="flex items-center">
                 <div className="p-2 bg-purple-100 rounded-lg">
@@ -106,7 +102,6 @@ const AdminDashboard = () => {
             </div>
           </div>
         )}
-
         {/* Quick Actions */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
           <div className="bg-white rounded-lg shadow p-6">
@@ -138,7 +133,6 @@ const AdminDashboard = () => {
               </Link>
             </div>
           </div>
-
           <div className="bg-white rounded-lg shadow p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Recent Activity</h3>
             {stats?.recentAttempts && stats.recentAttempts.length > 0 ? (

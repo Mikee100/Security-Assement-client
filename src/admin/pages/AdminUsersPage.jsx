@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
-import { useAdmin } from '../../contexts/AdminContext';
+import { useAuth } from '../../contexts/AuthContext';
 import logo from '../../assets/react.svg';
 
 const AdminUsersPage = () => {
@@ -10,7 +10,7 @@ const AdminUsersPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [search, setSearch] = useState('');
-  const { admin } = useAdmin();
+  const { user } = useAuth();
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -80,7 +80,7 @@ const AdminUsersPage = () => {
     doc.text('User Report', pageWidth / 2, 18, { align: 'center' });
     doc.setFontSize(12);
     doc.text(`Generated: ${new Date().toLocaleString()}`, pageWidth - 10, 10, { align: 'right' });
-    doc.text(`Admin: ${admin?.username || 'N/A'}`, pageWidth - 10, 18, { align: 'right' });
+    doc.text(`Admin: ${user?.username || user?.fullName || 'N/A'}`, pageWidth - 10, 18, { align: 'right' });
     // Summary stats
     doc.setFontSize(11);
     doc.text(`Total Users: ${totalUsers}`, 10, 36);
@@ -121,7 +121,7 @@ const AdminUsersPage = () => {
           <img src={logo} alt="Logo" className="h-12 w-12 rounded-full shadow" />
           <div>
             <h2 className="text-3xl font-bold text-gray-800">All Users</h2>
-            <div className="text-gray-500 text-sm mt-1">Admin: <span className="font-semibold text-blue-700">{admin?.username || 'N/A'}</span></div>
+            <div className="text-gray-500 text-sm mt-1">Admin: <span className="font-semibold text-blue-700">{user?.username || user?.fullName || 'N/A'}</span></div>
           </div>
         </div>
         {/* Summary cards */}

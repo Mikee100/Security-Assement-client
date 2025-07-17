@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
-import { useAdmin } from '../../contexts/AdminContext';
+import { useAuth } from '../../contexts/AuthContext';
 import { FiDownload, FiBarChart2, FiAward, FiTrendingUp, FiTrendingDown, FiUsers, FiClock } from 'react-icons/fi';
 
 const AdminQuizResults = () => {
@@ -11,7 +11,7 @@ const AdminQuizResults = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [sortConfig, setSortConfig] = useState({ key: 'completed_at', direction: 'desc' });
-  const { admin } = useAdmin();
+  const { user } = useAuth();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -71,7 +71,7 @@ const AdminQuizResults = () => {
     doc.setFontSize(10);
     doc.setTextColor(100, 100, 100);
     doc.text(`Generated: ${new Date().toLocaleString()}`, pageWidth - 10, 10, { align: 'right' });
-    doc.text(`Admin: ${admin?.username || 'N/A'}`, pageWidth - 10, 16, { align: 'right' });
+    doc.text(`Admin: ${user?.username || user?.fullName || 'N/A'}`, pageWidth - 10, 16, { align: 'right' });
     
     // Summary stats
     if (stats) {

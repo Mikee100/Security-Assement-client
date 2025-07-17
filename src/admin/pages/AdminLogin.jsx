@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAdmin } from '../../contexts/AdminContext';
+import { useAuth } from '../../contexts/AuthContext';
 
 const AdminLogin = () => {
   const [formData, setFormData] = useState({
@@ -9,7 +9,7 @@ const AdminLogin = () => {
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const { login } = useAdmin();
+  const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -25,13 +25,16 @@ const AdminLogin = () => {
     setLoading(true);
 
     const result = await login(formData.email, formData.password);
-    
     if (result.success) {
-      navigate('/admin/dashboard');
+      if (result.role === 'admin') {
+        navigate('/admin/dashboard');
+      } else {
+        setError('You do not have admin access.');
+        navigate('/dashboard');
+      }
     } else {
       setError(result.error);
     }
-    
     setLoading(false);
   };
 
@@ -46,14 +49,12 @@ const AdminLogin = () => {
             Access the admin panel
           </p>
         </div>
-        
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           {error && (
             <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
               {error}
             </div>
           )}
-          
           <div className="space-y-4">
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700">
@@ -70,7 +71,6 @@ const AdminLogin = () => {
                 placeholder="Enter admin email"
               />
             </div>
-            
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-gray-700">
                 Admin Password
@@ -87,7 +87,6 @@ const AdminLogin = () => {
               />
             </div>
           </div>
-
           <div>
             <button
               type="submit"

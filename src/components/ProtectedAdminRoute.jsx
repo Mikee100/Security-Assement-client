@@ -1,9 +1,9 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
-import { useAdmin } from '../../contexts/AdminContext';
+import { useAuth } from '../contexts/AuthContext';
 
 const ProtectedAdminRoute = ({ children }) => {
-  const { admin, loading } = useAdmin();
+  const { user, role, loading } = useAuth();
 
   if (loading) {
     return (
@@ -13,8 +13,12 @@ const ProtectedAdminRoute = ({ children }) => {
     );
   }
 
-  if (!admin) {
+  if (!user) {
     return <Navigate to="/admin/login" replace />;
+  }
+
+  if (role !== 'admin') {
+    return <Navigate to="/dashboard" replace />;
   }
 
   return children;

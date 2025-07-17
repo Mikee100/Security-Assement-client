@@ -20,8 +20,7 @@ export const AuthProvider = ({ children }) => {
     const token = localStorage.getItem('token');
     const savedUser = localStorage.getItem('user');
     const savedRole = localStorage.getItem('role');
-    
-    if (token && savedUser) {
+    if (token && savedUser && savedRole) {
       setUser(JSON.parse(savedUser));
       setRole(savedRole);
     }
@@ -39,13 +38,12 @@ export const AuthProvider = ({ children }) => {
       setRole(role);
       return { success: true, role };
     } catch (error) {
-      // 2FA required
       if (error.response?.status === 206 && error.response?.data?.twofa_required) {
         return { success: false, twofa_required: true, error: error.response.data.error };
       }
-      return { 
-        success: false, 
-        error: error.response?.data?.error || 'Login failed' 
+      return {
+        success: false,
+        error: error.response?.data?.error || 'Login failed'
       };
     }
   };
@@ -53,12 +51,11 @@ export const AuthProvider = ({ children }) => {
   const register = async (fullName, email, password) => {
     try {
       const response = await authAPI.register({ fullName, email, password });
-      // Do NOT log in or store user/token/role after registration
       return { success: true };
     } catch (error) {
-      return { 
-        success: false, 
-        error: error.response?.data?.error || 'Registration failed' 
+      return {
+        success: false,
+        error: error.response?.data?.error || 'Registration failed'
       };
     }
   };
